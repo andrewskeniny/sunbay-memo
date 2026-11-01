@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Mini investment memo on Sunbay.io (pre-seed, Warsaw): Pass recommendation with interactive TAM, competitive map, traction benchmark and return simulator.">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Sunbay.io Investment Memo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: research-desk memo. One reading column (~68ch) for prose, wider panels for the interactive models. Sticky section nav. */
+:root{
+  --bg:#f3f4f7; --surface:#ffffff; --surface-2:#eaedf2; --ink:#151a22; --ink-2:#4a5260; --muted:#858d9a; --line:#dfe3e9;
+  --accent:#1f4e8c; --accent-soft:#e3ecf8; --verdict:#a3263a; --verdict-soft:#f7e6e9; --good:#0a7d3f; --good-soft:#e2f3e8; --warn:#b26a00;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --grid:#e1e0d9; --axis:#c3c2b7;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --cond:"IBM Plex Sans Condensed","Arial Narrow",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0f1217; --surface:#171b22; --surface-2:#1f242d; --ink:#eceef2; --ink-2:#b3bac6; --muted:#7f8794; --line:#2a303a;
+  --accent:#6ea5ea; --accent-soft:#1c2a3f; --verdict:#e26b7c; --verdict-soft:#3a1c23; --good:#3fbf72; --good-soft:#15301f; --warn:#e0a040;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --grid:#2c2c2a; --axis:#383835; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0f1217; --surface:#171b22; --surface-2:#1f242d; --ink:#eceef2; --ink-2:#b3bac6; --muted:#7f8794; --line:#2a303a;
+  --accent:#6ea5ea; --accent-soft:#1c2a3f; --verdict:#e26b7c; --verdict-soft:#3a1c23; --good:#3fbf72; --good-soft:#15301f; --warn:#e0a040;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --grid:#2c2c2a; --axis:#383835; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;margin:0}
+a{color:var(--accent)}
+h1,h2,h3,h4{font-family:var(--cond);line-height:1.1;margin:0;text-wrap:balance;letter-spacing:-.005em}
+h1{font-size:clamp(2rem,4.5vw,3.1rem);font-weight:700}
+h2{font-size:1.65rem;font-weight:700}
+h3{font-size:1.2rem;font-weight:700}
+p{margin:0}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+sup.cite a{font-family:var(--mono);font-size:.68em;text-decoration:none;color:var(--accent);padding:0 .1em}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
+.nav-in{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;gap:1.25rem;align-items:center;overflow-x:auto;scrollbar-width:none;height:48px}
+.nav-in::-webkit-scrollbar{display:none}
+.nav-brand{font-family:var(--cond);font-weight:700;white-space:nowrap;color:var(--ink);text-decoration:none}
+.nav a.lnk{white-space:nowrap;color:var(--ink-2);text-decoration:none;font-size:.86rem}
+.nav a.lnk:hover{color:var(--accent)}
+.nav .pill{margin-left:auto;background:var(--verdict-soft);color:var(--verdict);font-family:var(--mono);font-size:.74rem;letter-spacing:.1em;padding:.25rem .6rem;border-radius:3px;white-space:nowrap}
+
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:2.5rem 5rem;display:grid;gap:3.5rem}
+.prose{max-width:70ch}
+.prose p+p{margin-top:.8rem}
+section{display:grid;gap:1.25rem;scroll-margin-top:64px}
+.sec-head{display:grid;gap:.4rem}
+.sec-head .eyebrow{color:var(--accent)}
+
+/* header */
+.hero{display:grid;gap:1.4rem}
+.meta{display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;font-size:.86rem;color:var(--ink-2)}
+.meta b{color:var(--ink);font-weight:500}
+.verdict{display:grid;grid-template-columns:auto 1fr;gap:1.5rem;align-items:start;background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--verdict);padding:1.4rem 1.6rem}
+.verdict .word{font-family:var(--cond);font-weight:700;font-size:3rem;color:var(--verdict);line-height:1;letter-spacing:-.02em}
+.verdict .word small{display:block;font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;color:var(--muted);margin-top:.5rem;font-weight:400}
+.verdict p{max-width:72ch}
+@media (max-width:640px){.verdict{grid-template-columns:1fr}}
+.note{font-size:.86rem;color:var(--ink-2);border-top:1px dashed var(--line);padding-top:.8rem;max-width:80ch}
+
+/* bullets */
+ul.pts{list-style:none;margin:0;padding:0;display:grid;gap:.8rem;max-width:78ch}
+ul.pts li{padding-left:1.25rem;position:relative}
+ul.pts li::before{content:"";position:absolute;left:0;top:.62em;width:.5rem;height:.5rem;border-radius:1px;background:var(--accent)}
+ul.pts.risk li::before{background:var(--verdict)}
+ul.pts li b{font-weight:600}
+ul.pts li.case{background:var(--surface);border:1px solid var(--line);padding:.9rem 1rem .9rem 2.2rem;margin-top:.3rem}
+ul.pts li.case::before{left:1rem;top:1.25em}
+ul.pts li .mit{display:block;color:var(--ink-2);font-size:.92rem;margin-top:.2rem}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+@media (max-width:820px){.two{grid-template-columns:1fr}}
+
+/* panels */
+.panel{background:var(--surface);border:1px solid var(--line);padding:1.25rem;display:grid;gap:1.1rem}
+.panel-head{display:flex;flex-wrap:wrap;gap:.5rem 1rem;align-items:baseline;justify-content:space-between}
+.panel-head h3{font-size:1.1rem}
+.panel-head .eyebrow{color:var(--muted)}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.9rem 1.4rem}
+.ctl{display:grid;gap:.25rem;min-width:0}
+.ctl label{display:flex;justify-content:space-between;gap:.5rem;font-size:.82rem;color:var(--ink-2)}
+.ctl label output{font-family:var(--mono);color:var(--ink);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent);margin:0}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:4px;overflow:hidden;flex-wrap:wrap}
+.seg button{background:var(--surface);color:var(--ink-2);border:0;padding:.4rem .75rem;font:inherit;font-size:.82rem;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff}
+.seg button:focus-visible,.chip:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem}
+.kpi{background:var(--surface-2);padding:.8rem .9rem;display:grid;gap:.15rem;min-width:0}
+.kpi .l{font-size:.74rem;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;font-family:var(--mono)}
+.kpi .v{font-family:var(--mono);font-size:1.35rem;font-weight:500;color:var(--ink)}
+.kpi .v.bad{color:var(--verdict)} .kpi .v.ok{color:var(--good)}
+.kpi .s{font-size:.78rem;color:var(--ink-2)}
+.readout{font-size:.9rem;color:var(--ink-2);border-left:3px solid var(--accent);padding:.4rem .9rem;background:var(--accent-soft)}
+.readout b{color:var(--ink)}
+.presets{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.presets span{font-size:.8rem;color:var(--muted)}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink-2);border-radius:999px;padding:.3rem .75rem;font:inherit;font-size:.8rem;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem}
+.chip[aria-pressed=true]{border-color:var(--accent);color:var(--ink);background:var(--accent-soft)}
+.chip .sw{width:.6rem;height:.6rem;border-radius:50%;display:inline-block}
+svg{display:block;max-width:100%;height:auto}
+svg text{font-family:var(--mono);font-size:11px;fill:var(--ink-2)}
+.chart-wrap{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:.88rem}
+.tbl th{text-align:left;font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;padding:.5rem .6rem;border-bottom:1px solid var(--line)}
+.tbl td{padding:.55rem .6rem;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl td.n{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl tr.hi td{background:var(--accent-soft)}
+.tbl-wrap{overflow-x:auto}
+.detail{background:var(--surface-2);padding:.9rem 1rem;font-size:.9rem;display:grid;gap:.3rem;min-height:5.5rem}
+.detail b{font-weight:600}
+.detail .tag{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:.4rem 1rem;font-size:.8rem;color:var(--ink-2)}
+.legend i{display:inline-block;width:.65rem;height:.65rem;border-radius:2px;margin-right:.35rem;vertical-align:-1px}
+.grid2{display:grid;grid-template-columns:1.2fr .8fr;gap:1.25rem;align-items:start}
+@media (max-width:820px){.grid2{grid-template-columns:1fr}}
+.callout{background:var(--verdict-soft);border-left:3px solid var(--verdict);padding:.7rem 1rem;font-size:.92rem}
+.callout.good{background:var(--good-soft);border-color:var(--good)}
+
+/* post-script */
+.ps{border-top:3px solid var(--ink);padding-top:1.5rem}
+.ps .cmp{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media (max-width:640px){.ps .cmp{grid-template-columns:1fr}}
+.ps .col{background:var(--surface);border:1px solid var(--line);padding:1rem;display:grid;gap:.5rem;font-size:.92rem}
+.ps .col h4{font-size:1rem}
+.ps .col ul{margin:0;padding-left:1.1rem;display:grid;gap:.3rem}
+
+/* sources */
+ol.src{margin:0;padding-left:1.6rem;display:grid;gap:.35rem;font-size:.86rem;color:var(--ink-2)}
+ol.src li{padding-left:.2rem}
+ol.src a{word-break:break-all}
+footer{color:var(--muted);font-size:.8rem;border-top:1px solid var(--line);padding-top:1rem}
+@media (prefers-reduced-motion:no-preference){.kpi .v{transition:color .2s}}
+</style>
+
+<nav class="nav" aria-label="Sections">
+  <div class="nav-in">
+    <a class="nav-brand" href="#top">Sunbay.io memo</a>
+    <a class="lnk" href="#rec">A. Recommendation</a>
+    <a class="lnk" href="#args">B. Arguments &amp; risks</a>
+    <a class="lnk" href="#team">1. Team</a>
+    <a class="lnk" href="#product">2. Product</a>
+    <a class="lnk" href="#market">3. Market</a>
+    <a class="lnk" href="#comp">4. Competition</a>
+    <a class="lnk" href="#traction">5. Traction</a>
+    <a class="lnk" href="#round">6. Round &amp; returns</a>
+    <a class="lnk" href="#after">Post-script</a>
+    <a class="lnk" href="#sources">Sources</a>
+    <span class="pill">PASS</span>
+  </div>
+</nav>
+
+<main class="wrap" id="top">
+
+<header class="hero">
+  <div class="eyebrow">Mini investment memo · pre-seed · Warsaw, PL</div>
+  <h1>Sunbay.io — automation platform for finance &amp; ops teams</h1>
+  <div class="meta">
+    <span>Ask: <b class="num">$1.2M at $6M post</b></span>
+    <span>Our model check: <b class="num">$500k (8.3%)</b></span>
+    <span>Fund: <b class="num">$70M</b></span>
+    <span>Deck: <b>2025 (traction to Apr-25)</b></span>
+    <span>Memo: <b>Nov 2026</b></span>
+    <span>Author: <b>Andrea Schenini</b></span>
+  </div>
+  <p class="note">Sections A–C judge the company strictly on the deck we were sent and on third-party data available to any analyst at the time (market, competitors, benchmarks). The company has since raised and repositioned; that is covered separately in the post-script so it does not contaminate the core judgement. Every external figure carries a numbered source.</p>
+</header>
+
+<!-- A -->
+<section id="rec">
+  <div class="sec-head"><div class="eyebrow">A · Top recommendation</div><h2>Pass at these terms</h2></div>
+  <div class="verdict">
+    <div class="word">PASS<small>conviction: high</small></div>
+    <div class="prose">
+      <p>Sunbay is pitching a generalist "automate anything, one use case at a time" platform while the only thing customers actually use is invoice-collection reminders, and the company's own numbers show that: collections were 70–90% of automated actions every month, and services revenue ($3k) was roughly double software MRR ($1.2–1.5k). That is a consulting shop with a product attached, not yet a software company. The team is committed but incomplete: two non-technical founders are full-time and the CTO is "full-time soon", so we cannot tell who builds the product or how defensible it is against a finance team armed with Zapier, their invoicing SaaS, or an LLM. The returns picture follows from that: our hurdle for a $500k pre-seed cheque is 5x, ideally 10x, and only the upside scenario (a ~$100M exit, roughly 8x) clears it, while the company the deck actually describes lands in the 0.2–2x range. Probability-weighted, the expected return is around 4x, but with a 40% chance of losing money and almost half of that expectation resting on a 5% outlier scenario; strip the outlier and it is about 2.5x. There is a real, boring pain here and a plausible niche business, but at $6M post on this positioning it is not a venture bet we should make.</p>
+    </div>
+  </div>
+</section>
+
+<!-- B -->
+<section id="args">
+  <div class="sec-head"><div class="eyebrow">B · Key arguments &amp; risks</div><h2>Why one could invest, and why we shouldn't</h2></div>
+  <div class="two">
+    <div>
+      <h3 style="margin-bottom:.8rem">The case for investing</h3>
+      <ul class="pts">
+        <li><b>The pain is real and recurring.</b> Intrum estimates 11% of European business revenue is paid late every year, and its 2024 report found firms spend 73 working days a year chasing payments<sup class="cite"><a href="#s18">[18]</a></sup>. Nobody enjoys this work, so retention of a tool that removes it should be strong.</li>
+        <li><b>There is a pricing gap in the mid-market.</b> AR specialists start at $259/month (Chaser) and $650 per user/month (Kolleno) and are UK/US-centric<sup class="cite"><a href="#s11">[11]</a><a href="#s13">[13]</a></sup>; Polish SMEs with 10–200 staff and local ERPs (Symfonia, Comarch, enova) are under-served. Local integrations are a moat Anglo players will not build.</li>
+        <li><b>The data already tells them where to focus.</b> Collections generated 254, 259, 638 and 464 automated actions in Jan–Apr 2025 versus 2–144 for the other modules<sup class="cite"><a href="#s1">[1]</a></sup>. A team that follows this signal has a clear vertical product.</li>
+        <li><b>Founders are full-time, resourceful and revenue-generating from month one.</b> Even services revenue at pre-seed shows they can sell, and the deck is unusually honest about what is "done", "soon" and "under development".</li>
+        <li><b>Entry price is low by market standards.</b> Carta's median post-money cap for US rounds of $1–2.5M was about $15M in 2025<sup class="cite"><a href="#s9">[9]</a></sup>; $6M post gives us 2.5x more ownership per dollar than a comparable US deal.</li>
+        <li class="case"><b>Upside case.</b> Sunbay drops the platform story, becomes "the Chaser of CEE" for invoice-heavy SMEs, reaches ~€15M ARR in 6–7 years on the back of local ERP integrations and payment-behaviour data, and is acquired by an ERP vendor or an AR consolidator (Billtrust/HighRadius type) at 7–8x revenue: a ~$100–120M exit, 8–10x on our cheque. That clears our hurdle comfortably; the question is how likely it is from this starting point, not whether it would be big enough.</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="margin-bottom:.8rem">Key risks and mitigations</h3>
+      <ul class="pts risk">
+        <li><b>Services creep.</b> Consulting already outweighs software 2:1; the "future paths" slide lists "bootstrap with a product &amp; services mix" as a live option<sup class="cite"><a href="#s1">[1]</a></sup>. <span class="mit">Mitigation: tranche the cheque; release the second half only when software MRR ≥ 2x services revenue for three consecutive months.</span></li>
+        <li><b>No full-time technical founder.</b> Nikodem is "full-time [SOON]"; two ops/finance founders cannot build a defensible software product alone. <span class="mit">Mitigation: closing condition that the CTO is full-time on a standard 4-year vest before money moves, plus technical due diligence on what exists today (own code vs. no-code).</span></li>
+        <li><b>Generalist positioning dilutes everything.</b> "Being generalist is in our blood" is a sales line, not a strategy; the Uber city-by-city analogy ignores that Uber dominated one city first. <span class="mit">Mitigation: board-level agreement on a collections-only roadmap for 12 months with named KPIs (DSO reduction, invoices under management).</span></li>
+        <li><b>Build-vs-buy and incumbent feature creep.</b> Polish invoicing SaaS already ships automatic email/SMS payment reminders<sup class="cite"><a href="#s17">[17]</a></sup>; Zapier/Make cost tens of euros; an LLM plus a spreadsheet replicates templated chasing in an afternoon. <span class="mit">Mitigation: defensibility must come from deep ERP connectors, dispute/promise-to-pay workflow and payment-behaviour data, none of which is in the deck today.</span></li>
+        <li><b>Unit economics unknown at a $250/month price point.</b> At ~$3k ACV, outbound SMB sales in Poland is hard to make pay back inside 12 months. <span class="mit">Mitigation: demand CAC, payback and gross-margin data before any term sheet; insist on a product-led or partner-led (accountants, ERP resellers) channel.</span></li>
+        <li class="case"><b>Downside case.</b> The company settles into a €300–500k/year automation agency with a thin product layer, never raises a priced seed, and our 8% becomes illiquid equity in a lifestyle business: 0–0.5x recovery via a small acquihire, more likely a write-off after 3–4 years of management attention.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- C1 Team -->
+<section id="team">
+  <div class="sec-head"><div class="eyebrow">C · Section analyses · 1</div><h2>Team</h2></div>
+  <ul class="pts">
+    <li><b>Filip (CEO) is the right profile to sell and fundraise, with a caveat.</b> Nine years in ops and automation and a stint at YC-backed Plane (payroll for startups, SF)<sup class="cite"><a href="#s19">[19]</a></sup> means he has seen a venture-grade GTM machine from inside. But the pedigree is as an employee, not a founder, and the "try to apply to YC until they accept us" line suggests at least one rejection already.</li>
+    <li><b>Dawid (COO) is the operator the business currently runs on.</b> Five years in finance and operations at Droppe, a Finnish industrial B2B marketplace that raised €3.9M in 2024<sup class="cite"><a href="#s20">[20]</a></sup>, maps directly to the buyer persona (finance specialist at a 50–200 FTE company). He is the one closest to the customer's pain and probably the one delivering the consulting revenue.</li>
+    <li><b>Nikodem (CTO) is the hole in the team.</b> Five years of software engineering at mBank and startups is adequate, but "full-time [SOON]" at a company that has already shipped a product raises the obvious question: who wrote the current product, and who owns it? Either the two business founders are building on no-code tools, or the code is partly the work of a part-timer with a day job. Both are weak foundations for the "platform" the deck promises.</li>
+    <li><b>Judgement signals cut both ways.</b> Credit: both business founders went full-time in April–May 2025, and the deck is honest about status. Debit: a Hannah Montana lyric as the "solution" slide and a Witcher screenshot for strategic options read as a team optimising for being memorable in a demo day crowd rather than for a serious investor conversation. In a pre-seed where we are buying judgement, that matters.</li>
+    <li><b>The founders themselves are unsure this is a venture business.</b> Their listed options include "fail and starve", "bootstrap with a product &amp; services mix" and "raise an angel round to prove the VC path is for us"<sup class="cite"><a href="#s1">[1]</a></sup>. We would be funding an experiment on whether they want to be VC-backed. That is a fine thing for angels to do; it is not what a $70M fund's reserves are for.</li>
+  </ul>
+</section>
+
+<!-- C2 Product -->
+<section id="product">
+  <div class="sec-head"><div class="eyebrow">C · Section analyses · 2</div><h2>Product</h2></div>
+  <ul class="pts">
+    <li><b>One feature is live; two are promises.</b> Bulk email/SMS payment reminders with templates work; the ElevenLabs-powered voice agent is "launching soon" and AI legal-document generation is "under development"<sup class="cite"><a href="#s1">[1]</a></sup>. The honest reading of slide 5 is: a reminders tool with a nice dashboard, plus OCR and bulk invoice generation as utilities.</li>
+    <li><b>The "one set of features, many use cases" architecture is platform thinking before product-market fit.</b> Slide 6 treats reminders as Lego bricks reusable for document requests and contract renewals. Those are different buyers (legal, sales ops) with different triggers and systems of record; sharing a notification engine does not make them one product. This is how a small team ends up with three half-products.</li>
+    <li><b>What the deck shows is replicable; what would be defensible is absent.</b> Templated reminders are built into Polish invoicing SaaS (Fakturownia sends SMS/email before, on and after the due date)<sup class="cite"><a href="#s17">[17]</a></sup> and into Xero/QuickBooks. A finance lead with ChatGPT or Claude and Zapier can wire the same flow. Real AR moats are ERP-depth integrations, dispute and promise-to-pay handling, escalation to legal/debt registers, and payment-prediction data. None appears in the deck.</li>
+    <li><b>The dashboard mock hints at the right product, which the narrative then abandons.</b> The Collection Flow screen (status, invoice, step, delay in days, risk flags) is a credible AR workflow UI. If the pitch had been "this screen, for every invoice-heavy SME in Poland, integrated with Symfonia and Comarch", we would be having a different conversation.</li>
+    <li><b>"Toyota Corolla, not Ferrari" is the wrong metaphor for a pre-seed.</b> Reliable and versatile is what you become after you have won a niche. At this stage investors want a sharp, narrow tool that a specific buyer cannot live without. The deck proudly describes the opposite.</li>
+  </ul>
+</section>
+
+<!-- C3 Market -->
+<section id="market">
+  <div class="sec-head"><div class="eyebrow">C · Section analyses · 3</div><h2>Market, with a bottom-up TAM</h2></div>
+  <ul class="pts">
+    <li><b>Top-down, this is a mid-sized, mid-growth category.</b> IMARC sizes global AR automation at $3.0B in 2025, reaching $6.9B by 2034, a 9.3% CAGR<sup class="cite"><a href="#s8">[8]</a></sup>. That is solid, not explosive: no tailwind strong enough to carry a generalist to a large outcome on its own.</li>
+    <li><b>Bottom-up, Poland alone caps out around €50M of serviceable revenue.</b> GUS counts 2.37M non-financial enterprises in 2024, of which 2.0% are small (10–49) and 0.6% medium (50–249), about 62k firms in the 10–249 band<sup class="cite"><a href="#s6">[6]</a></sup>. Filtering for invoice-heavy B2B sectors and real collection pain, and pricing at Sunbay's own later list price, gives a Polish SAM of roughly €50M (model below). A venture outcome needs the EU, where the same logic yields ~€1.5B, and where the incumbents already sit.</li>
+    <li><b>The deck has no market slide at all.</b> No TAM, no segment choice, no geography. Slide 2 names three personas (real estate, renewables, IT equipment) that have little in common except "sends many invoices", which is a hint that the real segmentation variable is invoice volume, not industry. The deck never says so.</li>
+    <li><b>Why-now is generic.</b> "AI is becoming mainstream" is true of every pitch in 2025. The specific why-now for AR, that cheap LLMs now make tone-adjusted, multilingual, negotiation-capable chasing feasible at SME prices, is a good argument the deck does not make.</li>
+    <li><b>Late payment is a European structural problem, which helps the long-term thesis.</b> Intrum's 2025 report (9,150 executives, 25 countries) estimates 11% of revenues paid late and warns that up to 10M European businesses face closure risk within two years<sup class="cite"><a href="#s18">[18]</a></sup>. The demand side is not the problem; the product focus and the price point are.</li>
+  </ul>
+
+  <div class="panel" id="tam">
+    <div class="panel-head"><h3>Interactive · Bottom-up TAM calculator</h3><span class="eyebrow">drag the assumptions</span></div>
+    <div class="controls">
+      <div class="ctl">
+        <label>Geography</label>
+        <div class="seg" role="group" aria-label="Geography">
+          <button type="button" id="geo-pl" aria-pressed="true" data-geo="pl">Poland</button>
+          <button type="button" id="geo-eu" aria-pressed="false" data-geo="eu">EU-27</button>
+        </div>
+      </div>
+      <div class="ctl"><label for="t-inv">Share in invoice-heavy B2B sectors <output id="o-inv">35%</output></label><input type="range" id="t-inv" min="10" max="70" value="35" step="5"></div>
+      <div class="ctl"><label for="t-pain">…of which with real collection pain (&gt;100 invoices/mo) <output id="o-pain">40%</output></label><input type="range" id="t-pain" min="10" max="80" value="40" step="5"></div>
+      <div class="ctl"><label for="t-acv">Annual contract value (€) <output id="o-acv">€5,900</output></label><input type="range" id="t-acv" min="2000" max="12000" value="5900" step="100"></div>
+      <div class="ctl"><label for="t-share">Realistic share a winner captures <output id="o-share">5%</output></label><input type="range" id="t-share" min="1" max="20" value="5" step="1"></div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="l">Firms 10–249 FTE</div><div class="v num" id="k-firms">61.7k</div><div class="s" id="k-firms-s">GUS 2024, derived from size shares [6]</div></div>
+      <div class="kpi"><div class="l">Addressable firms</div><div class="v num" id="k-addr">8.6k</div><div class="s">after both filters</div></div>
+      <div class="kpi"><div class="l">Serviceable market</div><div class="v num" id="k-sam">€51M</div><div class="s">addressable × ACV</div></div>
+      <div class="kpi"><div class="l">ARR at that share</div><div class="v num" id="k-arr">€2.5M</div><div class="s">what a winner would book</div></div>
+    </div>
+    <div class="readout" id="tam-read"></div>
+    <p class="note" style="border:0;padding:0">Assumptions: enterprise counts from GUS (Poland, 2024: 2,374.5k firms; 2.0% small, 0.6% medium)<sup class="cite"><a href="#s6">[6]</a></sup> and Eurostat (EU, 2024: 34M firms, 99.8% SMEs, 94.4% micro, so ~5.4% in the 10–249 band ≈ 1.84M)<sup class="cite"><a href="#s7">[7]</a></sup>. Default ACV is Sunbay's own 2026 "Standard" list price of €490/month<sup class="cite"><a href="#s4">[4]</a></sup>; at the deck-era ~$250/month it would be ~€2,800. Sector and pain shares are our judgement, which is why they are sliders.</p>
+  </div>
+</section>
+
+<!-- C4 Competition -->
+<section id="comp">
+  <div class="sec-head"><div class="eyebrow">C · Section analyses · 4</div><h2>Competitive landscape &amp; differentiation</h2></div>
+  <ul class="pts">
+    <li><b>The deck's competitor slide names four products and analyses none.</b> Tesorio and Collbox are dismissed as "$1k+/month for large volumes", Zapier and Make as "require setup". Missing entirely: the SMB-priced AR specialists (Chaser from $259/mo, Kolleno from $650/user/mo, Upflow with a free tier)<sup class="cite"><a href="#s11">[11]</a><a href="#s13">[13]</a><a href="#s15">[15]</a></sup>, the Polish invoicing platforms with built-in reminders, and the elephant: ChatGPT/Claude as a do-it-yourself substitute.</li>
+    <li><b>The funded specialists are small, which cuts both ways.</b> Chaser (London, 2013) has raised roughly $5–6M in total<sup class="cite"><a href="#s12">[12]</a></sup>; Kolleno (London, 2020) raised a £4M seed<sup class="cite"><a href="#s14">[14]</a></sup>; Tesorio (US) is the exception at $37.5M<sup class="cite"><a href="#s16">[16]</a></sup>. Good news: no one has locked up European SMEs. Bad news: a decade of AR startups has not produced a breakout, which says something about the category's ceiling.</li>
+    <li><b>Differentiation as pitched is "cheaper and simpler", which is not a moat.</b> Price is replicable and simplicity erodes with every added use case. The only durable differentiators available here are local ERP integrations (Symfonia, Comarch Optima, enova365, wFirma), Polish legal escalation (KRD debt register, interest notes under Polish law) and collection-outcome data. The deck mentions none of them.</li>
+    <li><b>The real competitor is "do nothing" plus a spreadsheet.</b> Slide 3 says so itself ("hire more people and build bigger spreadsheets"). Winning that fight needs a 10-minute onboarding from the customer's invoicing system, not a "platform". The 2026 live product's one-click import and €1,000 implementation fee<sup class="cite"><a href="#s4">[4]</a></sup> suggest they learned this.</li>
+    <li><b>Horizontal automation tools are not the threat the deck thinks.</b> Zapier/Make are the alternative for tech-savvy users, but the real risk is the opposite end: LLM agents making bespoke workflow automation trivial for everyone, which commoditises exactly the generalist "automate the boring" layer Sunbay wants to own, while leaving vertical AR workflow (integrations, legal, data) intact.</li>
+  </ul>
+
+  <div class="panel" id="map">
+    <div class="panel-head"><h3>Interactive · Competitive map</h3><span class="eyebrow">entry price vs. specialisation · bubble = disclosed funding · click a bubble</span></div>
+    <div class="presets" id="seg-chips"></div>
+    <div class="grid2">
+      <div class="chart-wrap"><svg id="map-svg" viewBox="0 0 720 420" role="img" aria-label="Competitive map: entry price per month on the x axis, AR specialisation on the y axis"></svg></div>
+      <div style="display:grid;gap:.75rem">
+        <div class="detail" id="map-detail"><span class="tag">Select a bubble</span><b>Where does Sunbay sit?</b><span>The deck positions Sunbay as a generalist at a specialist's price. The toggle shows where the live 2026 product moved.</span></div>
+        <label class="chip" style="justify-self:start"><input type="checkbox" id="show-move" checked style="accent-color:var(--accent)"> Show Sunbay's 2025 → 2026 move</label>
+        <div class="legend" id="map-legend"></div>
+      </div>
+    </div>
+    <p class="note" style="border:0;padding:0">Prices are vendor list prices converted to € at parity for comparability; Upflow, Tesorio, Collbox and enterprise AR suites are quote-based, so their positions are indicative (deck statements or public commentary) and flagged in the detail card. Specialisation is our 0–100 judgement of how narrowly the product targets AR collections.</p>
+  </div>
+</section>
+
+<!-- C5 Traction -->
+<section id="traction">
+  <div class="sec-head"><div class="eyebrow">C · Section analyses · 5</div><h2>Traction &amp; benchmarking</h2></div>
+  <ul class="pts">
+    <li><b>Revenue says consulting, not SaaS.</b> April 2025: $1.2–1.5k MRR from 5–6 clients plus ~$3k consulting<sup class="cite"><a href="#s1">[1]</a></sup>. Software is about one third of revenue, and ~$250 per client per month is a price at which a direct sales motion cannot pay back. This is the single most important slide in the deck and it confirms the thesis of the whole memo.</li>
+    <li><b>The north-star metric is the wrong one, and it dipped.</b> "Automated actions" counts emails sent, which is an input, not an outcome; customers buy days-sales-outstanding reduction and cash collected. The metric also fell from 735 to 664 total actions between March and April, with collections dropping 638 → 464, in the very month the deck was being written.</li>
+    <li><b>Module usage is the clearest product signal in the deck and the team ignores it.</b> Collections were 92%, 85%, 87% and 70% of all automated actions from January to April<sup class="cite"><a href="#s1">[1]</a></sup>. Customers vote with usage; the roadmap (voice agents, legal docs, contract renewals) votes elsewhere.</li>
+    <li><b>Against pre-seed benchmarks, the round is too large for the proof.</b> Carta's median US cap for $1–2.5M rounds is ~$15M<sup class="cite"><a href="#s9">[9]</a></sup>, so $6M post is cheap on paper, but the $1.2M ask implies ~370x trailing software ARR. In our experience European pre-seeds of this size either show €10k+ software MRR with month-on-month growth or a team with a prior exit. Sunbay shows neither.</li>
+    <li><b>The path to a priced seed is steep from here.</b> To reach the ~€25k software MRR a seed investor would expect within 18 months, Sunbay needs roughly 18% compound monthly growth from $1.35k, or 50+ paying customers at the deck-era price. The calculator below lets you test alternatives.</li>
+  </ul>
+
+  <div class="panel" id="trac">
+    <div class="panel-head"><h3>Interactive · What the deck's own numbers say</h3><span class="eyebrow">hover bars · adjust the seed target</span></div>
+    <div class="grid2">
+      <div style="display:grid;gap:.6rem">
+        <div class="eyebrow">Automated actions by module, Jan–Apr 2025 (slide 10)</div>
+        <div class="chart-wrap"><svg id="mod-svg" viewBox="0 0 560 260" role="img" aria-label="Stacked bars of automated actions by module"></svg></div>
+        <div class="legend"><span><i style="background:var(--s1)"></i>Collection</span><span><i style="background:var(--s3)"></i>Document flow</span><span><i style="background:var(--s4)"></i>Invoicing</span></div>
+      </div>
+      <div style="display:grid;gap:.6rem">
+        <div class="eyebrow">April 2025 revenue mix (midpoint MRR)</div>
+        <div class="chart-wrap"><svg id="rev-svg" viewBox="0 0 360 120" role="img" aria-label="Revenue mix bar: consulting vs software MRR"></svg></div>
+        <div class="callout">Software is <b class="num">31%</b> of monthly revenue. A SaaS investor wants that number inverted before a priced round.</div>
+      </div>
+    </div>
+    <div class="controls" style="border-top:1px solid var(--line);padding-top:1rem">
+      <div class="ctl"><label for="g-mrr">Current software MRR ($) <output id="o-gmrr">$1,350</output></label><input type="range" id="g-mrr" min="500" max="5000" value="1350" step="50"></div>
+      <div class="ctl"><label for="g-target">Seed-ready MRR target ($) <output id="o-gtarget">$25,000</output></label><input type="range" id="g-target" min="10000" max="60000" value="25000" step="1000"></div>
+      <div class="ctl"><label for="g-months">Months to next raise <output id="o-gmonths">18</output></label><input type="range" id="g-months" min="6" max="30" value="18" step="1"></div>
+      <div class="ctl"><label for="g-acv">Price per customer ($/mo) <output id="o-gacv">$250</output></label><input type="range" id="g-acv" min="100" max="800" value="250" step="10"></div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="l">Required MoM growth</div><div class="v num" id="g-mom">17.6%</div><div class="s">compound, every month</div></div>
+      <div class="kpi"><div class="l">Customers needed</div><div class="v num" id="g-cust">100</div><div class="s">at that price point</div></div>
+      <div class="kpi"><div class="l">Net new per month</div><div class="v num" id="g-net">5.3</div><div class="s">from today's 5–6 clients</div></div>
+      <div class="kpi"><div class="l">Runway from $1.2M</div><div class="v num" id="g-run">~24 mo</div><div class="s">at ~$50k/mo burn for 3 founders + 2 hires</div></div>
+    </div>
+    <div class="readout" id="g-read"></div>
+  </div>
+</section>
+
+<!-- C6 Round -->
+<section id="round">
+  <div class="sec-head"><div class="eyebrow">C · Section analyses · 6</div><h2>The round &amp; returns</h2></div>
+  <ul class="pts">
+    <li><b>Terms: $1.2M at $6M post is 20% to new money, the top of the usual 10–20% pre-seed band.</b> Our $500k would buy 8.3%, enough to lead or co-lead with a board observer seat, pro-rata rights, 1x non-participating preference and information rights. We would push for a tranche structure (see Risks) rather than a lower price; the price is not the problem.</li>
+    <li><b>What "success" means for a $500k pre-seed cheque in a $70M fund.</b> We underwrite early-stage positions to a 5x hurdle (roughly 30% IRR over 6–7 years) and want a credible path to 10x, because a 30–35 position portfolio needs its winners to carry the losses. We do not need this one deal to return the fund; we need its upside to be large and reasonably likely. The simulator below is built around those two thresholds.</li>
+    <li><b>Dilution path matters more than entry price.</b> Two further priced rounds at 20% each plus a 10% option pool takes 8.3% to ~4.8% at exit; three rounds takes it to ~3.8%. At 3.8%, 5x needs a ~$65M exit (≈$10M ARR at 6–7x) and 10x needs ~$130M. Those are the numbers to hold in mind while reading the deck's $1.35k MRR.</li>
+    <li><b>Scenario returns.</b> The company the deck describes (services mix, no priced seed) returns 0.2–0.5x. A disciplined niche Polish AR SaaS sold to a local acquirer returns ~2x. The "Chaser of CEE" upside, a €15M ARR business bought by an ERP vendor or AR consolidator at 7x, returns ~8x and ~35% IRR. A pan-European category leader would return 30x+, but no European AR company has reached that scale in a decade of trying. Weighting those at 40/35/20/5 gives an expected ~4.3x, just under the hurdle, but the shape is the problem: only a 25% chance of clearing 5x, a 40% chance of a loss, and almost half the expected value sitting in the 5% outlier. Without the outlier the expectation is ~2.5x.</li>
+    <li><b>What would have to be true for this to clear the hurdle.</b> (1) Sunbay narrows to collections and reaches €1M software ARR within 24 months at ≥80% software mix; (2) ERP integrations create switching costs that lift net revenue retention above 110%; (3) a European AR consolidator or ERP vendor pays 7x+ revenue in 2031–32; (4) we deploy reserves pro-rata through Series A to hold ~6%. Each is plausible alone; together they describe a company the deck does not present. The pass is about probability, not about the size of the prize.</li>
+    <li><b>Our conclusion on the round.</b> This is an angel or micro-fund cheque (€100–250k from operators who can help with Polish mid-market distribution), where a 2–3x expected outcome on a small ticket is fine. For us, at $500k, we would stay close and reconsider at seed if software MRR exceeds €25k with services under 20% of revenue: at that point the upside scenario becomes the base case and the hurdle math works.</li>
+  </ul>
+
+  <div class="panel" id="ret">
+    <div class="panel-head"><h3>Interactive · Return simulator against a 5x / 10x hurdle</h3><span class="eyebrow">presets, or drag anything · edit the probabilities</span></div>
+    <div class="presets"><span>Scenarios:</span>
+      <button type="button" class="chip" data-preset="deck">Deck-implied (services mix)</button>
+      <button type="button" class="chip" data-preset="base">Base: niche SaaS</button>
+      <button type="button" class="chip" data-preset="up" aria-pressed="true">Upside: "Chaser of CEE"</button>
+      <button type="button" class="chip" data-preset="moon">Outlier: pan-EU leader</button>
+    </div>
+    <div class="controls">
+      <div class="ctl"><label for="r-check">Our cheque ($k) <output id="o-check">$500k</output></label><input type="range" id="r-check" min="100" max="1200" value="500" step="50"></div>
+      <div class="ctl"><label for="r-post">Post-money ($M) <output id="o-post">$6.0M</output></label><input type="range" id="r-post" min="3" max="12" value="6" step="0.5"></div>
+      <div class="ctl"><label for="r-rounds">Further priced rounds <output id="o-rounds">3</output></label><input type="range" id="r-rounds" min="0" max="4" value="3" step="1"></div>
+      <div class="ctl"><label for="r-dil">Dilution per round <output id="o-dil">20%</output></label><input type="range" id="r-dil" min="10" max="30" value="20" step="1"></div>
+      <div class="ctl"><label for="r-esop">Option pool top-ups <output id="o-esop">10%</output></label><input type="range" id="r-esop" min="0" max="15" value="10" step="1"></div>
+      <div class="ctl"><label for="r-arr">ARR at exit ($M) <output id="o-arr">$15M</output></label><input type="range" id="r-arr" min="0" max="13" value="7" step="1"></div>
+      <div class="ctl"><label for="r-mult">Revenue multiple at exit <output id="o-mult">7x</output></label><input type="range" id="r-mult" min="2" max="15" value="7" step="0.5"></div>
+      <div class="ctl"><label for="r-years">Years to exit <output id="o-years">7</output></label><input type="range" id="r-years" min="3" max="10" value="7" step="1"></div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="l">Ownership at exit</div><div class="v num" id="r-own">3.8%</div><div class="s" id="r-own-s">from 8.3% at entry</div></div>
+      <div class="kpi"><div class="l">Exit value</div><div class="v num" id="r-ev">$105M</div><div class="s">ARR × multiple</div></div>
+      <div class="kpi"><div class="l">Our proceeds</div><div class="v num" id="r-proc">$4.0M</div><div class="s" id="r-moic">8.0x MOIC · 35% IRR</div></div>
+      <div class="kpi"><div class="l">Hurdle check</div><div class="v num" id="r-fund">5.7%</div><div class="s" id="r-fund-s">of $70M</div></div>
+    </div>
+    <div class="chart-wrap"><svg id="fund-svg" viewBox="0 0 720 110" role="img" aria-label="Return meter: multiple on invested capital against the 5x and 10x hurdles"></svg></div>
+    <div class="readout" id="r-read"></div>
+    <div class="tbl-wrap"><table class="tbl" id="r-table" aria-label="Scenario table with probabilities"><thead><tr><th>Scenario</th><th>Exit ARR</th><th>Multiple</th><th>Exit value</th><th>Proceeds</th><th>MOIC</th><th>IRR</th><th>Probability</th></tr></thead><tbody></tbody></table></div>
+    <div class="kpis">
+      <div class="kpi"><div class="l">Expected MOIC</div><div class="v num" id="x-moic">—</div><div class="s">probability-weighted</div></div>
+      <div class="kpi"><div class="l">Expected proceeds</div><div class="v num" id="x-proc">—</div><div class="s" id="x-proc-s">on the cheque</div></div>
+      <div class="kpi"><div class="l">P(≥ 5x)</div><div class="v num" id="x-p5">—</div><div class="s">chance of clearing the hurdle</div></div>
+      <div class="kpi"><div class="l">Loss probability</div><div class="v num" id="x-loss">—</div><div class="s">chance of &lt; 1x</div></div>
+    </div>
+    <div class="readout" id="x-read"></div>
+    <p class="note" style="border:0;padding:0">Simplifications: all-common waterfall (no preference stack), no pro-rata follow-on (adding reserves raises ownership and cost roughly in step, so MOIC barely moves while the fund-level dollar impact grows), no secondary. Exit ARR slider uses a log-spaced scale. IRR is shown for completeness; with exit timing this uncertain, MOIC is the more informative number. Scenario probabilities are our judgement and editable; they are normalised if they do not sum to 100.</p>
+  </div>
+</section>
+
+<!-- Post-script -->
+<section id="after" class="ps">
+  <div class="sec-head"><div class="eyebrow">Post-script · outside the deck</div><h2>What actually happened, and whether it changes the call</h2></div>
+  <div class="prose">
+    <p>In June 2026 Sunbay announced €550k from Kogito Ventures with s20 and angels including Kahoot's CTO<sup class="cite"><a href="#s2">[2]</a><a href="#s3">[3]</a></sup>. That is less than half the $1.2M asked in this deck, which is consistent with the market pricing the generalist story down, or with the founders cutting the round to what they could close. More importantly, the company we see today is not the company in the deck.</p>
+  </div>
+  <div class="cmp">
+    <div class="col"><h4>The deck (2025)</h4><ul>
+      <li>"The automation platform for finance &amp; operations teams"; "being generalist is in our blood"</li>
+      <li>Collections as use case 1 of many; document requests and contract renewals next</li>
+      <li>~$250/month per client; 5–6 clients; $3k consulting on top</li>
+      <li>No competitor analysis, no market sizing, no integrations named</li>
+    </ul></div>
+    <div class="col"><h4>The live product (Nov 2026)</h4><ul>
+      <li>"Accounts receivable automation platform. Build, run and automate your entire collections process."<sup class="cite"><a href="#s5">[5]</a></sup></li>
+      <li>Explicitly not for "a few invoices a month"; targets wholesale, logistics, subscription, manufacturing, real estate</li>
+      <li>€290/€490/€690 per month at 250 invoices, €1,000 implementation; 20+ businesses in 5 countries<sup class="cite"><a href="#s4">[4]</a><a href="#s2">[2]</a></sup></li>
+      <li>Integrations with Symfonia, enova365, Comarch, SAP B1, Dynamics, Xero, QuickBooks, wFirma, inFakt; KRD legal escalation; AI query agent<sup class="cite"><a href="#s5">[5]</a></sup></li>
+    </ul></div>
+  </div>
+  <div class="prose">
+    <p>Every move they made is the move this memo asks for: vertical focus on collections, 2x the price point, local ERP integrations as the moat, legal escalation as the Polish-specific feature. That validates the diagnosis and says something good about the founders' ability to listen to their own data. It does not change the recommendation on <em>this</em> deck at <em>these</em> terms, because we would have been paying $6M post for the generalist company and hoping for the vertical one. It does move Sunbay onto the watch list: at 20 customers on €490/month the software run-rate is still only around €10k MRR, so the seed-round test we set above (€25k software MRR, services under 20%) is the right trigger to re-engage.</p>
+  </div>
+  <div class="callout good">Lesson for our process: when usage data in a deck contradicts the narrative, underwrite the usage. Here it predicted the pivot 12 months early.</div>
+</section>
+
+<!-- Sources -->
+<section id="sources">
+  <div class="sec-head"><div class="eyebrow">Sources</div><h2>References</h2></div>
+  <ol class="src">
+    <li id="s1">Sunbay.io pitch deck, 12 slides, 2025 (traction reported for Jan–Apr 2025). Supplied with the task.</li>
+    <li id="s2">Tech.eu, "sunbay.io raises €550K to automate invoice collection for finance teams", 11 Jun 2026. <a href="https://tech.eu/2026/06/11/sunbayio-raises-eur550k-to-automate-invoice-collection-for-finance-teams/" target="_blank" rel="noopener">tech.eu</a></li>
+    <li id="s3">Vestbee, "Polish firm sunbay.io lands €550k to reinvent invoice collections", 11 Jun 2026. <a href="https://www.vestbee.com/insights/articles/sunbay-io-lands-550k" target="_blank" rel="noopener">vestbee.com</a></li>
+    <li id="s4">Sunbay.io pricing page (accessed 1 Nov 2026): Basic €290 / Standard €490 / Pro €690 per month at 250 invoices; €1,000 implementation. <a href="https://sunbay.io/pricing" target="_blank" rel="noopener">sunbay.io/pricing</a></li>
+    <li id="s5">Sunbay.io homepage (accessed 1 Nov 2026): positioning, integrations, customer stories. <a href="https://sunbay.io/" target="_blank" rel="noopener">sunbay.io</a></li>
+    <li id="s6">Statistics Poland (GUS), "Non-financial enterprises by kind and place of economic activity in 2024": 2,374.5k enterprises; micro 97.2%, small 2.0%, medium 0.6%, large 0.2%. <a href="https://stat.gov.pl/en/topics/economic-activities-finances/activity-of-enterprises-activity-of-companies/non-financial-enterprises-by-kind-and-place-of-economic-activity-in-2024,24,6.html" target="_blank" rel="noopener">stat.gov.pl</a></li>
+    <li id="s7">Eurostat, "Structural business statistics overview" (data extracted Sep 2026): 34M enterprises in 2024, 99.8% SMEs, 94.4% micro. <a href="https://ec.europa.eu/eurostat/statistics-explained/index.php?title=Structural_business_statistics_overview" target="_blank" rel="noopener">ec.europa.eu/eurostat</a></li>
+    <li id="s8">IMARC Group, "Accounts Receivable Automation Market": $3.0B (2025) to $6.9B (2034), 9.34% CAGR. <a href="https://www.imarcgroup.com/accounts-receivable-automation-market-statistics" target="_blank" rel="noopener">imarcgroup.com</a></li>
+    <li id="s9">Carta, "State of Pre-Seed: 2025 in review" (Feb 2026): median post-money SAFE caps ~$10M for $250k–$1M rounds, ~$15M for $1M–$2.5M. <a href="https://carta.com/data/state-of-pre-seed-2025/" target="_blank" rel="noopener">carta.com</a></li>
+    <li id="s10">Carta, "SAFE valuation caps Q2 2026" (Aug 2026): caps rising across every size bucket; 93% of pre-seed rounds are SAFEs. <a href="https://carta.com/data/safe-valuation-caps-q2-2026/" target="_blank" rel="noopener">carta.com</a></li>
+    <li id="s11">Chaser pricing: Compact from $259/mo, Core $779, Complete $1,169 (monthly billing). <a href="https://www.chaserhq.com/pricing" target="_blank" rel="noopener">chaserhq.com</a></li>
+    <li id="s12">Dealroom, Chaser Technologies profile: founded London 2013; rounds of $510k, $4.0M, $1.6M. <a href="https://app.dealroom.co/companies/chaser_1" target="_blank" rel="noopener">dealroom.co</a></li>
+    <li id="s13">Kolleno pricing: Business Pay $650/user/mo, Business Plus $1,245/user/mo (monthly billing). <a href="https://www.kolleno.com/pricing" target="_blank" rel="noopener">kolleno.com</a></li>
+    <li id="s14">Commercial Factor (IFA), "Kolleno earns $5.4MM (£4M) in seed funding", led by Eurazeo and Stride.VC. <a href="https://magazine.factoring.org/news/eurazeo-and-stridevc-lead-54mm-seed-funding-for-kolleno" target="_blank" rel="noopener">factoring.org</a></li>
+    <li id="s15">Upflow pricing: free "Discover" plan; paid tiers quote-based by invoiced revenue, unlimited seats. <a href="https://upflow.io/pricing" target="_blank" rel="noopener">upflow.io</a></li>
+    <li id="s16">CB Insights, Tesorio financials: $37.46M raised over 9 rounds; $17M Series B (Jul 2022). <a href="https://www.cbinsights.com/company/tesorio/financials" target="_blank" rel="noopener">cbinsights.com</a></li>
+    <li id="s17">Fakturownia, "Powiadomienia SMS i e-mail": automatic payment reminders before, on and after the due date. <a href="https://fakturownia.pl/funkcja-powiadomienia-sms" target="_blank" rel="noopener">fakturownia.pl</a></li>
+    <li id="s18">Intrum, European Payment Report 2025 (9,150 executives, 25 countries): 11% of revenues paid late; up to 10M businesses at closure risk; 2024 edition: 73 working days a year chasing payments. <a href="https://www.intrum.com/insights/publications/epr-2025/" target="_blank" rel="noopener">intrum.com</a></li>
+    <li id="s19">Y Combinator company directory, Plane: payroll for startups, founded 2017, San Francisco. <a href="https://www.ycombinator.com/companies/plane" target="_blank" rel="noopener">ycombinator.com</a></li>
+    <li id="s20">Vestbee, "Droppe raises €3.9M" (2024), Finnish B2B industrial marketplace. <a href="https://www.vestbee.com/insights/articles/droppe-raises-3-9-m" target="_blank" rel="noopener">vestbee.com</a></li>
+  </ol>
+  <footer>Prepared by Andrea Schenini as a time-boxed case exercise. Interactive models are illustrative and run entirely in the browser; drag any input to test the reasoning. Figures from the deck are as presented by the founders and were not audited.</footer>
+</section>
+
+</main>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const fmtM=v=>v>=1000?'$'+(v/1000).toFixed(2).replace(/\.?0+$/,'')+'B':'$'+(v>=100?v.toFixed(0):(v>=10?v.toFixed(1):v.toFixed(2)).replace(/\.?0+$/,''))+'M';
+const fmtE=v=>v>=1e9?'€'+(v/1e9).toFixed(2)+'B':v>=1e6?'€'+(v/1e6).toFixed(v>=100e6?0:v>=10e6?1:1)+'M':'€'+Math.round(v/1000)+'k';
+const fmtK=v=>v>=1e6?(v/1e6).toFixed(2)+'M':v>=1000?(v/1000).toFixed(1)+'k':Math.round(v).toString();
+const pct=(v,d=1)=>(v*100).toFixed(d)+'%';
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const svgNS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent){const e=document.createElementNS(svgNS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+
+/* ---------- TAM ---------- */
+const GEO={pl:{firms:2374500*(0.020+0.006),label:'GUS 2024, 2.0% small + 0.6% medium of 2,374.5k [6]'},eu:{firms:34000000*0.054,label:'Eurostat 2024: 99.8% SMEs − 94.4% micro ≈ 5.4% of 34M [7]'}};
+let geo='pl';
+function tam(){
+  const inv=+$('t-inv').value/100, pain=+$('t-pain').value/100, acv=+$('t-acv').value, share=+$('t-share').value/100;
+  $('o-inv').textContent=Math.round(inv*100)+'%'; $('o-pain').textContent=Math.round(pain*100)+'%';
+  $('o-acv').textContent='€'+acv.toLocaleString('en-US'); $('o-share').textContent=Math.round(share*100)+'%';
+  const firms=GEO[geo].firms, addr=firms*inv*pain, sam=addr*acv, arr=sam*share;
+  $('k-firms').textContent=fmtK(firms); $('k-firms-s').textContent=GEO[geo].label;
+  $('k-addr').textContent=fmtK(addr); $('k-sam').textContent=fmtE(sam); $('k-arr').textContent=fmtE(arr);
+  const venture=50e6;
+  const msg= geo==='pl'
+    ? `Poland alone: a <b>${fmtE(sam)}</b> serviceable market. Even owning <b>${Math.round(share*100)}%</b> of it books <b>${fmtE(arr)}</b> ARR, ${arr<venture?`well short of the ~€50M ARR a venture-scale outcome needs. The company has to be pan-European from day one, where the incumbents already are.`:`enough for a venture outcome only under aggressive assumptions.`}`
+    : `EU-27: a <b>${fmtE(sam)}</b> serviceable market, ${fmtE(arr)} ARR at ${Math.round(share*100)}% share. Large enough on paper, but capturing it means competing country by country against Chaser, Upflow, Kolleno and every local invoicing suite with built-in reminders.`;
+  $('tam-read').innerHTML=msg;
+}
+['t-inv','t-pain','t-acv','t-share'].forEach(id=>$(id).addEventListener('input',tam));
+document.querySelectorAll('[data-geo]').forEach(b=>b.addEventListener('click',()=>{geo=b.dataset.geo;document.querySelectorAll('[data-geo]').forEach(x=>x.setAttribute('aria-pressed',x===b));tam();}));
+tam();
+
+/* ---------- Competitive map ---------- */
+const SEGS=[
+  {id:'ar',name:'AR specialists',color:'--s1'},
+  {id:'inv',name:'Invoicing SaaS with reminders',color:'--s3'},
+  {id:'hz',name:'Horizontal automation',color:'--s4'},
+  {id:'diy',name:'DIY with LLMs',color:'--s2'},
+  {id:'sb',name:'Sunbay',color:'--verdict'}
+];
+const COMP=[
+  {n:'Chaser',seg:'ar',price:259,spec:96,fund:6.1,fundTxt:'~$6M raised (Dealroom) [12]',note:'London, 2013. SMB tier from $259/mo (<$5M revenue, 4 users). The closest Anglo analogue to what Sunbay became.',src:'[11][12]'},
+  {n:'Kolleno',seg:'ar',price:650,spec:94,fund:5.4,fundTxt:'$5.4M seed (Eurazeo, Stride) [14]',note:'London, 2020. Per-user pricing from $650/mo incl. 100 SMS + 100 calls. Targets <£1M to £100M turnover.',src:'[13][14]'},
+  {n:'Upflow',seg:'ar',price:500,spec:74,fund:5,fundTxt:'$5M+ raised; free Discover tier [15]',note:'Paris. Quote-based tiers by invoiced revenue (up to $10M… $100M+), unlimited seats. Position on price axis is indicative.',src:'[15]',est:true},
+  {n:'Tesorio',seg:'ar',price:1200,spec:78,fund:37.5,fundTxt:'$37.5M raised, $17M Series B 2022 [16]',note:'US, mid-market/enterprise cash-flow platform. Deck itself puts it at "$1k+/month". Price indicative.',src:'[16]',est:true},
+  {n:'Collbox',seg:'ar',price:1000,spec:90,fund:0,fundTxt:'undisclosed',note:'Named in the deck as "$1k+/month for large volumes". No public data verified; shown as the deck describes it.',src:'[1]',est:true},
+  {n:'Enterprise AR suites',seg:'ar',price:3000,spec:97,fund:0,fundTxt:'HighRadius, Billtrust: late-stage/public',note:'Order-to-cash suites for large corporates. Not Sunbay\'s market, but the natural acquirers of a successful AR startup.',src:'—',est:true},
+  {n:'Fakturownia',seg:'inv',price:15,spec:35,fund:0,fundTxt:'bootstrapped Polish SaaS',note:'Polish invoicing platform; paid plans include automatic email/SMS reminders before, on and after due date. Free trial, free Micro tier.',src:'[17]'},
+  {n:'Xero / QuickBooks',seg:'inv',price:30,spec:30,fund:0,fundTxt:'public companies',note:'Built-in invoice reminders. Low pricing, shallow collections workflow. Also integration targets for Sunbay.',src:'—',est:true},
+  {n:'Zapier',seg:'hz',price:20,spec:4,fund:0,fundTxt:'late-stage',note:'Deck\'s own stated alternative: cheap but needs setup and maintenance. Entry tiers ~$20/mo.',src:'[1]',est:true},
+  {n:'Make / n8n',seg:'hz',price:10,spec:12,fund:0,fundTxt:'venture-backed',note:'Lower-cost horizontal automation; n8n self-hostable. Same build-it-yourself trade-off.',src:'[1]',est:true},
+  {n:'ChatGPT / Claude + spreadsheet',seg:'diy',price:20,spec:17,fund:0,fundTxt:'n/a',note:'A finance lead drafts tone-adjusted reminders and mail-merges them in an afternoon. This is what "generalist AI wrapper" competes with, and loses to on price.',src:'—',est:true},
+  {n:'Sunbay (deck, 2025)',seg:'sb',price:250,spec:45,fund:0,fundTxt:'pre-seed ask $1.2M',note:'"Automation platform for finance & ops"; collections is one use case of many. ~$250/client/month implied by $1.2–1.5k MRR over 5–6 clients.',src:'[1]',sb:'a'},
+  {n:'Sunbay (live, 2026)',seg:'sb',price:490,spec:86,fund:0.6,fundTxt:'€550k raised Jun 2026 [2]',note:'"Accounts receivable automation platform"; Standard €490/mo at 250 invoices; ERP integrations and KRD legal escalation. Moved to where the memo says it should be.',src:'[2][4][5]',sb:'b'}
+];
+const active=new Set(SEGS.map(s=>s.id));
+const chips=$('seg-chips'), legend=$('map-legend');
+SEGS.forEach(s=>{
+  const b=document.createElement('button');b.type='button';b.className='chip';b.setAttribute('aria-pressed','true');
+  b.innerHTML=`<span class="sw" style="background:var(${s.color})"></span>${s.name}`;
+  b.addEventListener('click',()=>{if(active.has(s.id)){if(active.size>1)active.delete(s.id);}else active.add(s.id);b.setAttribute('aria-pressed',active.has(s.id));drawMap();});
+  chips.appendChild(b);
+});
+legend.innerHTML='<span><i style="background:var(--muted);opacity:.5"></i>bubble size = disclosed funding</span><span style="font-family:var(--mono)">◌ = price position indicative</span>';
+const W=720,H=420,ML=56,MR=20,MT=20,MB=48;
+const xs=p=>ML+(Math.log10(Math.max(p,8))-Math.log10(8))/(Math.log10(4000)-Math.log10(8))*(W-ML-MR);
+const ys=s=>MT+(100-s)/100*(H-MT-MB);
+let selected=COMP.find(c=>c.sb==='a');
+function drawMap(){
+  const svg=$('map-svg');svg.innerHTML='';
+  const grid=css('--grid'),axis=css('--axis');
+  [10,30,100,300,1000,3000].forEach(p=>{el('line',{x1:xs(p),x2:xs(p),y1:MT,y2:H-MB,stroke:grid,'stroke-width':1},svg);el('text',{x:xs(p),y:H-MB+16,'text-anchor':'middle'},svg).textContent='€'+p.toLocaleString('en-US');});
+  [0,25,50,75,100].forEach(s=>{el('line',{x1:ML,x2:W-MR,y1:ys(s),y2:ys(s),stroke:grid,'stroke-width':1},svg);});
+  el('line',{x1:ML,x2:W-MR,y1:H-MB,y2:H-MB,stroke:axis},svg);
+  el('text',{x:(ML+W-MR)/2,y:H-8,'text-anchor':'middle'},svg).textContent='Entry price per month (log scale) →';
+  const yl=el('text',{x:14,y:(MT+H-MB)/2,'text-anchor':'middle',transform:`rotate(-90 14 ${(MT+H-MB)/2})`},svg);yl.textContent='Generalist ← specialisation → AR vertical';
+  // move arrow
+  const a=COMP.find(c=>c.sb==='a'),b=COMP.find(c=>c.sb==='b');
+  if($('show-move').checked&&active.has('sb')){
+    const defs=el('defs',{},svg);const m=el('marker',{id:'arr',viewBox:'0 0 10 10',refX:'9',refY:'5',markerWidth:'7',markerHeight:'7',orient:'auto-start-reverse'},defs);el('path',{d:'M0,0 L10,5 L0,10 z',fill:css('--verdict')},m);
+    el('path',{d:`M${xs(a.price)+12},${ys(a.spec)-10} Q ${xs(a.price)+40},${ys(b.spec)+10} ${xs(b.price)-14},${ys(b.spec)+6}`,fill:'none',stroke:css('--verdict'),'stroke-width':1.5,'stroke-dasharray':'4 3','marker-end':'url(#arr)'},svg);
+  }
+  COMP.filter(c=>active.has(c.seg)).forEach(c=>{
+    const seg=SEGS.find(s=>s.id===c.seg),col=css(seg.color);
+    const r=c.fund>0?8+Math.sqrt(c.fund)*3:8;
+    const g=el('g',{style:'cursor:pointer'},svg);
+    el('circle',{cx:xs(c.price),cy:ys(c.spec),r:r+4,fill:'transparent'},g);
+    const circ=el('circle',{cx:xs(c.price),cy:ys(c.spec),r:r,fill:col,'fill-opacity':c.est?0.35:0.85,stroke:selected===c?css('--ink'):col,'stroke-width':selected===c?2.5:1.5,'stroke-dasharray':c.est?'3 2':'none'},g);
+    const lab=el('text',{x:xs(c.price)+r+5,y:ys(c.spec)+4,fill:css('--ink'),'font-weight':c.seg==='sb'?'500':'400'},g);lab.textContent=c.n;
+    if(c.n.startsWith('Enterprise')){lab.setAttribute('text-anchor','end');lab.setAttribute('x',xs(c.price)+r);lab.setAttribute('y',ys(c.spec)-r-4);}
+    if(c.sb==='b'){lab.setAttribute('text-anchor','end');lab.setAttribute('x',xs(c.price)-r-5);}
+    if(c.n==='Fakturownia'){lab.setAttribute('y',ys(c.spec)-12);lab.setAttribute('x',xs(c.price)-r);}
+    g.addEventListener('click',()=>{selected=c;drawMap();showDetail(c);});
+    g.addEventListener('mouseenter',()=>circ.setAttribute('fill-opacity','1'));
+    g.addEventListener('mouseleave',()=>circ.setAttribute('fill-opacity',c.est?0.35:0.85));
+  });
+}
+function showDetail(c){
+  const seg=SEGS.find(s=>s.id===c.seg);
+  $('map-detail').innerHTML=`<span class="tag">${seg.name} · entry ≈ €${c.price.toLocaleString('en-US')}/mo${c.est?' (indicative)':''} · ${c.fundTxt}</span><b>${c.n}</b><span>${c.note}</span><span class="tag">Sources ${c.src}</span>`;
+}
+$('show-move').addEventListener('change',drawMap);
+drawMap();showDetail(selected);
+
+/* ---------- Traction charts ---------- */
+const MODS=[{m:'Jan',c:254,d:2,i:20},{m:'Feb',c:259,d:11,i:36},{m:'Mar',c:638,d:37,i:60},{m:'Apr',c:464,d:144,i:56}];
+function drawMods(){
+  const svg=$('mod-svg');svg.innerHTML='';const W=560,H=260,ML=44,MT=16,MB=34,MR=12,max=800;
+  const grid=css('--grid'),axis=css('--axis');
+  const y=v=>MT+(1-v/max)*(H-MT-MB);
+  [0,200,400,600,800].forEach(v=>{el('line',{x1:ML,x2:W-MR,y1:y(v),y2:y(v),stroke:v===0?axis:grid},svg);el('text',{x:ML-6,y:y(v)+4,'text-anchor':'end'},svg).textContent=v;});
+  const bw=70,gap=(W-ML-MR-bw*4)/5;
+  MODS.forEach((r,i)=>{
+    const x=ML+gap+i*(bw+gap);const tot=r.c+r.d+r.i;let cum=0;
+    const parts=[['c','--s1','Collection'],['d','--s3','Document flow'],['i','--s4','Invoicing']];
+    const g=el('g',{},svg);
+    parts.forEach(([k,col,name])=>{const v=r[k];if(!v)return;const top=y(cum+v),bot=y(cum);el('rect',{x,y:top,width:bw,height:Math.max(bot-top-2,1),fill:css(col),rx:k==='i'?0:0},g);cum+=v;});
+    el('text',{x:x+bw/2,y:H-MB+16,'text-anchor':'middle'},svg).textContent=r.m+' 25';
+    el('text',{x:x+bw/2,y:y(tot)-6,'text-anchor':'middle',fill:css('--ink')},svg).textContent=Math.round(r.c/tot*100)+'% collection';
+    const title=el('title',{},g);title.textContent=`${r.m} 2025: Collection ${r.c}, Document flow ${r.d}, Invoicing ${r.i} (total ${tot})`;
+  });
+  el('text',{x:ML,y:H-6,'text-anchor':'start',fill:css('--muted')},svg).textContent='automated actions / month';
+}
+function drawRev(){
+  const svg=$('rev-svg');svg.innerHTML='';const W=360,soft=1350,cons=3000,tot=soft+cons,x0=10,w=W-20;
+  el('rect',{x:x0,y:30,width:w*cons/tot-1,height:40,fill:css('--s2')},svg);
+  el('rect',{x:x0+w*cons/tot+1,y:30,width:w*soft/tot-1,height:40,fill:css('--s1')},svg);
+  el('text',{x:x0,y:20},svg).textContent='Consulting ~$3,000 (69%)';
+  const t=el('text',{x:x0+w,y:20,'text-anchor':'end'},svg);t.textContent='Software MRR ~$1,350 (31%)';
+  el('text',{x:x0,y:95,fill:css('--muted')},svg).textContent='Slide 10: "$1.2–1.5k MRR, plus ~$3k consulting" [1]';
+  el('text',{x:x0+w*cons/tot/2,y:55,'text-anchor':'middle',fill:'#fff','font-weight':'500'},svg).textContent='2.2×';
+}
+drawMods();drawRev();
+function growth(){
+  const mrr=+$('g-mrr').value,tgt=+$('g-target').value,mo=+$('g-months').value,acv=+$('g-acv').value;
+  $('o-gmrr').textContent='$'+mrr.toLocaleString('en-US');$('o-gtarget').textContent='$'+tgt.toLocaleString('en-US');$('o-gmonths').textContent=mo;$('o-gacv').textContent='$'+acv;
+  const mom=Math.pow(tgt/mrr,1/mo)-1,cust=tgt/acv,now=mrr/acv,net=(cust-now)/mo;
+  $('g-mom').textContent=pct(mom);$('g-mom').className='v num '+(mom>0.15?'bad':mom>0.08?'':'ok');
+  $('g-cust').textContent=Math.ceil(cust).toLocaleString('en-US');$('g-net').textContent=net.toFixed(1);
+  $('g-read').innerHTML=`Reaching <b>$${tgt.toLocaleString('en-US')}</b> MRR in <b>${mo} months</b> needs <b>${pct(mom)}</b> compound monthly growth and <b>${Math.ceil(cust)}</b> paying customers at $${acv}/mo, about <b>${net.toFixed(1)} net new logos every month</b> from a base of ${Math.round(now)}. ${mom>0.15?'Sustained 15%+ monthly growth is top-decile for SMB SaaS; with no full-time CTO and a services business to run, we would not underwrite it.':mom>0.08?'Demanding but not impossible for a focused team with a repeatable channel. The deck shows neither yet.':'Achievable, but only because you raised the price or the time: both are what the 2026 company actually did.'}`;
+}
+['g-mrr','g-target','g-months','g-acv'].forEach(id=>$(id).addEventListener('input',growth));growth();
+
+/* ---------- Returns ---------- */
+const ARRS=[1,2,3,5,7.5,10,12.5,15,20,30,50,75,100,150];
+const FUND=70;
+const PRESETS={
+  deck:{check:500,post:6,rounds:1,dil:20,esop:10,arr:0,mult:3,years:5},
+  base:{check:500,post:6,rounds:2,dil:20,esop:10,arr:3,mult:5,years:6},
+  up:{check:500,post:6,rounds:3,dil:20,esop:10,arr:7,mult:7,years:7},
+  moon:{check:500,post:6,rounds:3,dil:20,esop:10,arr:10,mult:10,years:8}
+};
+const PRESET_NAMES={deck:'Deck-implied: product & services mix, no priced seed',base:'Base: niche Polish AR SaaS, small strategic sale',up:'Upside: "Chaser of CEE", ERP-vendor acquisition',moon:'Outlier: pan-European category leader'};
+const PROBS={deck:40,base:35,up:20,moon:5};
+let curPreset=null;
+function setPreset(k){curPreset=k;const p=PRESETS[k];$('r-check').value=p.check;$('r-post').value=p.post;$('r-rounds').value=p.rounds;$('r-dil').value=p.dil;$('r-esop').value=p.esop;$('r-arr').value=p.arr;$('r-mult').value=p.mult;$('r-years').value=p.years;document.querySelectorAll('[data-preset]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.preset===k));returns(k);}
+document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>setPreset(b.dataset.preset)));
+function calc(check,post,rounds,dil,esop,arr,mult,years){
+  const own0=check/1000/post, own=own0*Math.pow(1-dil,rounds)*(1-esop), ev=arr*mult, proc=own*ev, moic=proc/(check/1000), irr=Math.pow(Math.max(moic,1e-9),1/years)-1;
+  return {own0,own,ev,proc,moic,irr,fund:proc/FUND,evFund:FUND/own,ev3:3*FUND/own};
+}
+function returns(presetKey){
+  presetKey=presetKey===undefined?curPreset:presetKey;
+  const check=+$('r-check').value,post=+$('r-post').value,rounds=+$('r-rounds').value,dil=+$('r-dil').value/100,esop=+$('r-esop').value/100,arr=ARRS[+$('r-arr').value],mult=+$('r-mult').value,years=+$('r-years').value;
+  $('o-check').textContent='$'+check+'k';$('o-post').textContent='$'+post.toFixed(1)+'M';$('o-rounds').textContent=rounds;$('o-dil').textContent=Math.round(dil*100)+'%';$('o-esop').textContent=Math.round(esop*100)+'%';$('o-arr').textContent=fmtM(arr);$('o-mult').textContent=mult+'x';$('o-years').textContent=years;
+  if(!presetKey)document.querySelectorAll('[data-preset]').forEach(b=>b.setAttribute('aria-pressed','false'));
+  const r=calc(check,post,rounds,dil,esop,arr,mult,years);
+  $('r-own').textContent=pct(r.own);$('r-own-s').textContent=`from ${pct(r.own0)} at entry`;
+  $('r-ev').textContent=fmtM(r.ev);$('r-proc').textContent=fmtM(r.proc);
+  $('r-proc').className='v num '+(r.moic<1?'bad':r.moic>=10?'ok':'');
+  $('r-moic').textContent=`${r.moic.toFixed(1)}x MOIC · ${pct(r.irr,0)} IRR`;
+  const hurdle=r.moic>=10?'venture-grade':r.moic>=5?'clears 5x':r.moic>=1?'below hurdle':'loss';
+  $('r-fund').textContent=hurdle;$('r-fund').className='v num '+(r.moic>=5?'ok':r.moic<1?'bad':'');
+  $('r-fund-s').textContent=`${pct(r.fund)} of the $70M fund`;
+  // return meter: MOIC vs 5x / 10x hurdles
+  const svg=$('fund-svg');svg.innerHTML='';const W=720,x0=10,w=W-20,bar=26,y=42;
+  const scaleMax=Math.max(12,r.moic*1.1);
+  const sx=v=>x0+Math.min(v/scaleMax,1)*w;
+  el('rect',{x:x0,y,width:w,height:bar,fill:css('--surface-2')},svg);
+  el('rect',{x:x0,y,width:Math.max(sx(r.moic)-x0,1),height:bar,fill:r.moic>=5?css('--good'):r.moic<1?css('--verdict'):css('--s1')},svg);
+  [[1,'1x',css('--muted')],[5,'5x hurdle',css('--warn')],[10,'10x target',css('--good')]].forEach(([v,l,col])=>{el('line',{x1:sx(v),x2:sx(v),y1:y-8,y2:y+bar+8,stroke:col,'stroke-width':2},svg);el('text',{x:sx(v),y:y-12,'text-anchor':'middle',fill:col},svg).textContent=l;});
+  el('text',{x:x0,y:y+bar+22,fill:css('--ink')},svg).textContent=`${r.moic.toFixed(1)}x · ${fmtM(r.proc)} on a $${check}k cheque`;
+  const ev5=5*check/1000/r.own, ev10=10*check/1000/r.own;
+  const t2=el('text',{x:W-10,y:y+bar+22,'text-anchor':'end'},svg);t2.textContent=`Exit needed for 5x: ${fmtM(ev5)} · for 10x: ${fmtM(ev10)}`;
+  // readout
+  let verdict;
+  if(r.moic>=10)verdict=`<b>${r.moic.toFixed(1)}x</b>, ${pct(r.irr,0)} IRR: a venture-grade outcome that would carry several losses in the portfolio. It requires a <b>${fmtM(r.ev)}</b> exit, i.e. ${fmtM(arr)} ARR for an SMB AR tool in a ~9%-CAGR category; no European AR company has reached that scale.`;
+  else if(r.moic>=5)verdict=`<b>${r.moic.toFixed(1)}x</b>, ${pct(r.irr,0)} IRR clears our 5x hurdle and adds ${pct(r.fund)} to the fund. This is a good investment if it happens; the question is whether a generalist platform with a part-time CTO and a 2:1 services mix gets here.`;
+  else if(r.moic>=1)verdict=`We get our money back and a little more: <b>${r.moic.toFixed(1)}x</b>, ${pct(r.irr,0)} IRR. Below hurdle. Years of board time for a marginal result.`;
+  else verdict=`We lose money: <b>${r.moic.toFixed(1)}x</b>. This is the path the deck's own "product & services mix" option leads to.`;
+  $('r-read').innerHTML=verdict;
+  // scenario table with probabilities
+  const tb=$('r-table').querySelector('tbody');tb.innerHTML='';
+  const rows=Object.keys(PRESETS).map(k=>{const p=PRESETS[k];return {k,p,rr:calc(check,post,rounds,dil,esop,ARRS[p.arr],p.mult,p.years)};});
+  rows.forEach(({k,p,rr})=>{const tr=document.createElement('tr');if(presetKey===k)tr.className='hi';
+    tr.innerHTML=`<td>${PRESET_NAMES[k]}</td><td class="n">${fmtM(ARRS[p.arr])}</td><td class="n">${p.mult}x</td><td class="n">${fmtM(rr.ev)}</td><td class="n">${fmtM(rr.proc)}</td><td class="n">${rr.moic.toFixed(1)}x</td><td class="n">${pct(rr.irr,0)}</td><td class="n"><input type="number" id="p-${k}" min="0" max="100" step="5" value="${PROBS[k]}" style="width:4.5em;font:inherit;background:var(--surface);color:var(--ink);border:1px solid var(--line);padding:.15rem .3rem" aria-label="Probability of ${PRESET_NAMES[k]}"> %</td>`;tb.appendChild(tr);
+    tr.querySelector('input').addEventListener('input',e=>{PROBS[k]=Math.max(0,+e.target.value||0);expected(rows);});});
+  const note=document.createElement('tr');note.innerHTML=`<td colspan="8" style="color:var(--muted);font-size:.8rem">Rows use the current cheque, post-money and dilution sliders; ARR, multiple and years come from each scenario. Probabilities are editable.</td>`;tb.appendChild(note);
+  expected(rows);
+}
+function expected(rows){
+  const tot=rows.reduce((s,{k})=>s+PROBS[k],0)||1;
+  let em=0,ep=0,p5=0,pl=0;
+  rows.forEach(({k,rr})=>{const w=PROBS[k]/tot;em+=w*rr.moic;ep+=w*rr.proc;if(rr.moic>=5)p5+=w;if(rr.moic<1)pl+=w;});
+  const check=+$('r-check').value;
+  $('x-moic').textContent=em.toFixed(1)+'x';$('x-moic').className='v num '+(em>=5?'ok':em<1?'bad':'');
+  $('x-proc').textContent=fmtM(ep);$('x-proc-s').textContent=`on a $${check}k cheque`;
+  $('x-p5').textContent=Math.round(p5*100)+'%';$('x-loss').textContent=Math.round(pl*100)+'%';$('x-loss').className='v num '+(pl>=0.4?'bad':'');
+  $('x-read').innerHTML= em>=5
+    ?`At these probabilities the expected return is <b>${em.toFixed(1)}x</b>, above the hurdle. If you believe this weighting, the deck is investable; we do not, because it requires giving the vertical pivot more than coin-flip odds from a deck that argues against it.`
+    :`Expected <b>${em.toFixed(1)}x</b> with a <b>${Math.round(p5*100)}%</b> chance of clearing 5x and a <b>${Math.round(pl*100)}%</b> chance of losing money${(()=>{const o=rows.find(r=>r.k==='moon');const share=o&&em>0?(PROBS.moon/tot*o.rr.moic)/em:0;return share>0.3?`; <b>${Math.round(share*100)}%</b> of that expectation comes from the outlier scenario alone`:'';})()}. The prize is real but the odds, as the deck presents them, are not: this is why we pass rather than negotiate price.${tot!==100?' <span style="color:var(--muted)">(probabilities normalised to 100%)</span>':''}`;
+}
+['r-check','r-post','r-rounds','r-dil','r-esop','r-arr','r-mult','r-years'].forEach(id=>$(id).addEventListener('input',()=>{curPreset=null;returns(null);}));
+setPreset('up');
+
+/* redraw charts on theme change */
+if(window.matchMedia){window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{drawMap();drawMods();drawRev();returns();});}
+new MutationObserver(()=>{drawMap();drawMods();drawRev();returns();}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+})();
+</script>
+
+</body>
+</html>
